@@ -1,4 +1,5 @@
 import numpy as np
+import posenet
 
 from posenet.constants import *
 
@@ -35,7 +36,7 @@ def decode_pose(
         displacements_bwd
 ):
     num_parts = scores.shape[2]
-    num_edges = len(PARENT_CHILD_TUPLES)
+    num_edges = len(posenet.constants.PARENT_CHILD_TUPLES)
 
     instance_keypoint_scores = np.zeros(num_parts)
     instance_keypoint_coords = np.zeros((num_parts, 2))
@@ -43,7 +44,7 @@ def decode_pose(
     instance_keypoint_coords[root_id] = root_image_coord
 
     for edge in reversed(range(num_edges)):
-        target_keypoint_id, source_keypoint_id = PARENT_CHILD_TUPLES[edge]
+        target_keypoint_id, source_keypoint_id = posenet.constants.PARENT_CHILD_TUPLES[edge]
         if (instance_keypoint_scores[source_keypoint_id] > 0.0 and
                 instance_keypoint_scores[target_keypoint_id] == 0.0):
             score, coords = traverse_to_targ_keypoint(
@@ -55,7 +56,7 @@ def decode_pose(
             instance_keypoint_coords[target_keypoint_id] = coords
 
     for edge in range(num_edges):
-        source_keypoint_id, target_keypoint_id = PARENT_CHILD_TUPLES[edge]
+        source_keypoint_id, target_keypoint_id = posenet.constants.PARENT_CHILD_TUPLES[edge]
         if (instance_keypoint_scores[source_keypoint_id] > 0.0 and
                 instance_keypoint_scores[target_keypoint_id] == 0.0):
             score, coords = traverse_to_targ_keypoint(

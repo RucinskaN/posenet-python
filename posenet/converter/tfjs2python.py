@@ -7,6 +7,10 @@ import numpy as np
 import os
 import tempfile
 
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+tf.disable_eager_execution()
+
 from posenet.converter.config import load_config
 
 BASE_DIR = os.path.join(tempfile.gettempdir(), '_posenet_weights')
