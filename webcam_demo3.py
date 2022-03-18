@@ -21,9 +21,6 @@ cam_height=720
 MODEL_DIR = './_models'
 DEBUG_OUTPUT = False
 
-
-
-
 def load_model(model_id, sess, model_dir=MODEL_DIR):
     model_ord = 3
    # model_cfg = load_config(model_ord)
@@ -102,14 +99,15 @@ def draw(
 def detectClap(leftX, rightX):
     result = abs(leftX-rightX)
     print("Wynik: ", result)
-    if(result < 150 ):
+    if(result < 80 and result !=0 ):
         print("KLASK")
-         
+        return 1     
 
 def main():
     with tf.Session() as sess:
         model_cfg, model_outputs = load_model(model, sess)
         output_stride = model_cfg['output_stride']
+        clap = 0
 
         cap = cv2.VideoCapture(cam_id)
         cap.set(3, cam_width)
@@ -158,7 +156,11 @@ def main():
             
             leftX = keypoint_coords[0, 9, 1]
             rightX = keypoint_coords[0, 10, 1]
-            detectClap(leftX, rightX)
+            clap = detectClap(leftX, rightX)
+            if(clap == 1):
+                font = cv2.FONT_HERSHEY_SIMPLEX    
+                overlay_image = cv2.putText(img,'KLASK',(50, 50),font, 1,
+                (255,0,0),2,cv2.LINE_4)
 
             cv2.imshow('posenet', overlay_image)
             frame_count += 1
