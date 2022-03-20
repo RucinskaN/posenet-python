@@ -97,17 +97,18 @@ def draw(
     return out_img
 
 def detectClap(leftX, rightX):
+    clap = False
     result = abs(leftX-rightX)
     print("Wynik: ", result)
-    if(result < 80 and result !=0 ):
+    if(result < 90 and result !=0 ):
         print("KLASK")
-        return 1     
+        clap = True
+        return clap     
 
 def main():
     with tf.Session() as sess:
         model_cfg, model_outputs = load_model(model, sess)
         output_stride = model_cfg['output_stride']
-        clap = 0
 
         cap = cv2.VideoCapture(cam_id)
         cap.set(3, cam_width)
@@ -157,9 +158,9 @@ def main():
             leftX = keypoint_coords[0, 9, 1]
             rightX = keypoint_coords[0, 10, 1]
             clap = detectClap(leftX, rightX)
-            if(clap == 1):
+            if(clap == True):
                 font = cv2.FONT_HERSHEY_SIMPLEX    
-                overlay_image = cv2.putText(img,'KLASK',(50, 50),font, 1,
+                overlay_image = cv2.putText(img,'KLASK',(100, 100),font, 1,
                 (255,0,0),2,cv2.LINE_4)
 
             cv2.imshow('posenet', overlay_image)
